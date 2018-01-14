@@ -13,6 +13,7 @@ module uart_test (
     `ifdef SIM
         assign clk = clkin;
     `else
+        // Synthesis part. Instantiate PLL
     `endif
     uart_tx #(4) dut (.*);
     always_ff @(posedge clk or negedge resetn_in)
@@ -40,5 +41,6 @@ module uart_test (
             end
         end
     end
+
 
 endmodule

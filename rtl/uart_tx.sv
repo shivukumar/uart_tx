@@ -24,7 +24,7 @@ module uart_tx #(
 
     assign ready = ~dvalid_re & (state == READY);
 
-    assign dvalid_re = ~dvalid_d & dvalid;
+    assign dvalid_re = ~dvalid_d & dvalid & (state == READY);
     always_ff @(posedge clk or negedge resetn)
         if (~resetn) dvalid_d <= 'b0;
         else         dvalid_d <= dvalid;
@@ -36,7 +36,7 @@ module uart_tx #(
             case (state)
                 READY: if (dvalid_re)
                             state <= BUSY;
-                BUSY: if (count == 4'd8 & load_next)
+                BUSY: if (count == 4'd9 & load_next)
                             state <= READY;
             endcase
         end
@@ -63,5 +63,16 @@ module uart_tx #(
         if (~resetn) tx_frame <= '1;
         else if (dvalid_re) tx_frame <= {STOP, data[7:0], START};
         else if (tx_en)     tx_frame <= {1'b1, tx_frame[9:1]};
+
+    `ifdef SIM
+        always_ff @(posedge clk)
+            if (resetn) begin
+                if (dvalid_re)
+                    $display ("TX Data = %s (0x%h)", data, data);
+
+                if (tx_en)
+                    $display ("TX serial = %b, count = %d", tx, count);
+            end
+    `endif
 
 endmodule
