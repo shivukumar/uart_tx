@@ -11,3 +11,9 @@ uart_test_tb: rtl/uart_tx.sv rtl/uart_test.sv rtl/sim/uart_test_tb.sv
 	sed -i 's/always_ff/always/g' $@
 	iverilog -g2012 -D SIM -o $@ 
 	vvp $@
+
+reset:
+	git checkout rtl/*.sv rtl/sim/*.sv
+
+clean:
+	rm -rf *.vcd uart_tx_tb uart_test_tb
