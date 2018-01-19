@@ -18,3 +18,7 @@ reset:
 
 clean:
 	rm -rf *.vcd uart_tx_tb uart_test_tb
+
+uart_test:
+	-mkdir build_uart_test
+	cd build_uart_test && quartus_sh -t ../scripts/quartus_proj.tcl
